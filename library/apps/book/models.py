@@ -21,12 +21,12 @@ class Book(models.Model):
 
 
 class BorrowedBook (models.Model):
-    client = models.ForeignKey(
+    client_id = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,
         related_name="borrowedbook_set"
     )
-    book = models.ForeignKey(
+    book_id = models.ForeignKey(
         Book,
         default=1,
         on_delete=models.CASCADE,
@@ -35,13 +35,13 @@ class BorrowedBook (models.Model):
     borrowed_date = models.DateTimeField(auto_now_add=True , null = True , blank= True)
 
     def __str__(self):
-        return f'{self.client} borrowed {self.book}'
+        return f'{self.client_id} borrowed {self.book_id}'
     
     def save(self, *args, **kwargs):
-        if self.book.quantity>0 :
-            self.book.quantity -=1
-            if self.book.quantity == 0:
-                self.book.is_active = False
+        if self.book_id.quantity>0 :
+            self.book_id.quantity -=1
+            if self.book_id.quantity == 0:
+                self.book_id.is_active = False
             self.book.save()
             super().save(*args, **kwargs)
 

@@ -21,10 +21,14 @@ class BorrowedBookSerializer (serializers.ModelSerializer):
     class Meta:
         model = BorrowedBook
         fields = [
-            'client',
-            'book',
+            'client_id',
+            'book_id',
             'borrowed_date'
         ]
+
+    def create (self,validate_data):
+        return super().create(validate_data)
+    
 
 
 class UserBookSerializer (serializers.ModelSerializer):
@@ -35,9 +39,13 @@ class UserBookSerializer (serializers.ModelSerializer):
         source = 'borrowedbook_set'
     )
 
+    user_details = ClientSerializer(
+        source = 'user_id',
+        read_only=True
+    )
     class Meta:
         model = Client
-        fields =['user' , 'books']
+        fields =['user_id' , 'books', 'user_details']
 
 
 class BookUsersSerializer (serializers.ModelSerializer):
@@ -47,6 +55,10 @@ class BookUsersSerializer (serializers.ModelSerializer):
         source = "borrowing_user_set.user.username"
     )
 
+    book_details = BookSerializer(
+        source = 'id',
+        read_only = True
+    )
     class Meta:
         model = Book
-        fields = ["title" , "auther" , "users"]
+        fields = ["id","users","book_details"]

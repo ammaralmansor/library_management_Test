@@ -1,4 +1,9 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins
+from rest_framework.viewsets import (
+    ModelViewSet,
+    GenericViewSet,
+    ReadOnlyModelViewSet
+)
 from rest_framework.response import Response
 from rest_framework import status
 from apps.api.serializers.book import BookSerializer
@@ -16,17 +21,24 @@ class BookViewSet (ModelViewSet):
     serializer_class = BookSerializer
 
 
-class BorrowedBookViewSet (ModelViewSet):
+class BorrowedBookViewSet (
+    mixins.CreateModelMixin ,
+    mixins.RetrieveModelMixin ,
+    mixins.ListModelMixin ,
+    mixins.DestroyModelMixin,
+    GenericViewSet
+            ):
+
     queryset = BorrowedBook.objects.all()
     serializer_class = BorrowedBookSerializer
 
 
-class UserBookViewSet (ModelViewSet):
+class UserBookViewSet (ReadOnlyModelViewSet):
     queryset = Client.objects.all()
     serializer_class = UserBookSerializer
 
 
-class BookUserViewSet (ModelViewSet):
+class BookUserViewSet (ReadOnlyModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookUsersSerializer
 
