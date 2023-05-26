@@ -38,7 +38,7 @@ class BorrowedBook (models.Model):
         return f'{self.client} borrowed {self.book}'
     
     def save(self, *args, **kwargs):
-        if self.book.quaquantity>0 :
+        if self.book.quantity>0 :
             self.book.quantity -=1
             if self.book.quantity == 0:
                 self.book.is_active = False
