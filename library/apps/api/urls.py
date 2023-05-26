@@ -1,6 +1,10 @@
 from django.urls import path, include
 
-from apps.api.views.authlib import ClientViewSet
+from apps.api.views.authlib import (
+    ClientViewSet,
+    RegisterClient
+
+    
 from apps.api.views.book import (
     BookViewSet,
     BookUserViewSet,
