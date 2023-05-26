@@ -17,13 +17,14 @@ class BookSerializer (serializers.ModelSerializer):
             'quantity'
         ]
 
-        def validate(self,data):
-            if not data['book_id'].is_active:
-                raise serializers.ValidationError(
-                    "Book is not avaliable"
-                )
-            return data
-
+        def validate(self,attrs):
+            if self.context['request'] == 'POST':
+                active = attrs.get('is_active', None)
+                if not active:
+                    raise serializers.ValidationError(
+                        "Book is not avaliable"
+                    )
+            return super().validate(attrs)
 
 class BorrowedBookSerializer (serializers.ModelSerializer):
     class Meta:
@@ -55,6 +56,9 @@ class UserBookSerializer (serializers.ModelSerializer):
         model = Client
         fields =['user_id' , 'books', 'user_details']
 
+    def get_user_details(self,obj):
+        return ClientSerializer(obj).data
+
 
 class BookUsersSerializer (serializers.ModelSerializer):
     users = ClientSerializer(
@@ -70,3 +74,6 @@ class BookUsersSerializer (serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ["id","users","book_details"]
+
+    def get_book_details(self,obj):
+        return BookSerializer(obj).data

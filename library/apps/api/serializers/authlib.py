@@ -1,26 +1,36 @@
 from rest_framework import serializers
 from apps.authlib.models import Client
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
-User = get_user_model()
+
+class UserSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email'
+        )
+
+
 class ClientSerializer (serializers.ModelSerializer):
-    username = serializers.PrimaryKeyRelatedField(
-        source = 'user_id.username',
-        read_only = True
+    details = UserSerializer(
+        read_only=True,
+        source='user_id'
     )
 
-    email = serializers.PrimaryKeyRelatedField(
-        source = 'user_id.email',
-        read_only = True
+    user_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        write_only=True
+
     )
+
     class Meta:
         model = Client
         fields = [
             'id',
             'user_id',
-            #ExtraField
-            'username',
-            'email'
+            # ExtraField
+            'details'
         ]
 
 
@@ -28,7 +38,8 @@ class RegisterClientSerializer(serializers.ModelSerializer):
     """
     for registering a new client user
     """
-    password = serializers.CharField(write_only = True)
+    username = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Client
@@ -38,7 +49,7 @@ class RegisterClientSerializer(serializers.ModelSerializer):
         password = validate_data.pop['password']
         user_data = {
             'username': validate_data['username'],
-            'password' : password
+            'password': password
         }
 
         user = User.objects.create_user(**user_data)
@@ -50,6 +61,3 @@ class RegisterClientSerializer(serializers.ModelSerializer):
             user=user
         )
         return Client_obj
-            
-        
-

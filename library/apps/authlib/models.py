@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-from django.conf import settings
 
 # class Client (AbstractUser):
 #     name = models.CharField(max_length=100)
@@ -10,12 +9,12 @@ from django.conf import settings
 
 
 class Client (models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL ,
+    user_id = models.OneToOneField(
+        User ,
         default=1,
         on_delete=models.CASCADE,
         related_name='client_user'
     )
 
     def __str__(self):
-        return self.user.username
+        return self.user_id.username
