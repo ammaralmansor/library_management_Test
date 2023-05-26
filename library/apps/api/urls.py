@@ -33,7 +33,7 @@ router = routers.DefaultRouter()
 router.register('borrowing' , BorrowedBookViewSet , basename="borrowing-books")
 
 urlpatterns = [
-    path('register/' , RegisterClientViewSet.as_view() , name = "register"),
+    path('register/' , RegisterClientViewSet.as_view({'get': 'list'}) , name = "register"),
     path('login/' , ObtainAuthToken.as_view(), name="api_token_auth"),
     path('client/', include(client_router.urls)),
     path('borrowing/', include(router.urls)),
